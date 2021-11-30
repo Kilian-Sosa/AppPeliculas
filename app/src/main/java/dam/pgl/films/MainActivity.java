@@ -37,9 +37,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     public static final String endPointPeliculas = "http://api.themoviedb.org/3/discover/movie?api_key=1865f43a0549ca50d341dd9ab8b29f49&language=es";
-    private static final String MOVIE_BASE_URL="https://image.tmdb.org/t/p/w185";
-    private static final String endPointCredits="https://api.themoviedb.org/3/movie/580489/credits?api_key=1865f43a0549ca50d341dd9ab8b29f49&language=en-ES&credit_id=580489";
-    private ArrayList<Film> listFilms=new ArrayList();
+    private static final String MOVIE_BASE_URL="https://image.tmdb.org/t/p/w185";private ArrayList<Film> listFilms=new ArrayList();
     private ListView listView;
 
     @Override
@@ -48,20 +46,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         listView=findViewById(R.id.listView);
         new ObtenerPeliculasAsync().execute(endPointPeliculas);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
-                intent.putExtra("id", String.valueOf (listFilms.get(i).getId() ) );
-                intent.putExtra("titulo", listFilms.get(i).getTitle() );
-                intent.putExtra("imagen", listFilms.get(i).getPoster_path() );
-                intent.putExtra("sinopsis", listFilms.get(i).getOverview() );
-
-                Log.d("test", "Pasando id " + listFilms.get(i).getId() );
-
-                startActivity(intent);
-            }
-        });
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -159,6 +143,20 @@ public class MainActivity extends AppCompatActivity {
             progress.dismiss();
             FilmAdapter adapter=new FilmAdapter(getApplicationContext(), listFilms);
             listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView adapterView, View view, int i, long l) {
+                    Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
+                    intent.putExtra("id", String.valueOf (listFilms.get(i).getId() ) );
+                    intent.putExtra("titulo", listFilms.get(i).getTitle() );
+                    intent.putExtra("imagen", listFilms.get(i).getPoster_path() );
+                    intent.putExtra("sinopsis", listFilms.get(i).getOverview() );
+
+                    Log.d("test", "Pasando id " + listFilms.get(i).getId() );
+
+                    startActivity(intent);
+                }
+            });
         }
     }
 
@@ -191,7 +189,10 @@ public class MainActivity extends AppCompatActivity {
             TextView name =convertView.findViewById(R.id.tvTitle);
             name.setText(arrayList.get(position).getTitle());
             TextView description = convertView.findViewById(R.id.tvDescripcion);
-            description.setText(arrayList.get(position).getOverview().substring(0,100) + " ... ");
+            if(arrayList.get(position).getOverview().length()<100)
+                description.setText(arrayList.get(position).getOverview());
+            else
+                description.setText(arrayList.get(position).getOverview().substring(0,100) + " ... ");
             ImageView imagen = convertView.findViewById(R.id.list_image);
             Picasso.get().load(MOVIE_BASE_URL + arrayList.get(position).getBackdrop_path()).into(imagen);
             imagen.setScaleType(ImageView.ScaleType.FIT_XY);

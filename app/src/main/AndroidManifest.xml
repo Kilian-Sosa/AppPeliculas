@@ -13,6 +13,7 @@
         <activity android:name=".ConfigurationActivity"/>
         <activity android:name=".AboutActivity"/>
         <activity android:name=".DetailsActivity"/>
+        <activity android:name=".ActorsActivity"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
